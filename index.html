@@ -1,18 +1,137 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.min.css"/>
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
+<meta charset="EUC-KR">
 <title>Insert title here</title>
 <style>
-  
-</style>
+    #image-container {
+      position: relative;
+      width: 768px;
+      height: 1000px;
+    }
+
+    .textbox-container {
+      display: flex;
+      position: absolute;
+      flex-wrap: wrap;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+    }
+
+    .textbox {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 50%;
+      height: 50%;
+    }
+
+    .text-input {
+      padding: 16px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 24px;
+      min-height: 28px;
+      color: white;
+      cursor : move;
+      z-index : 1;
+    }
+
+    .text-input:empty:after {
+      content: '텍스트 입력';
+      color: #aaa;
+    }
+    
+    #image-container:not(.placeholder--hidden) .text-input:empty:after {
+      content: '텍스트 입력';
+      color: #aaa;
+    }
+
+    #dialog-dimming {
+      display: none;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      align-items: center;
+      justify-content: center;
+      background-color: #0000007f;
+    }
+
+    #dialog {
+      display: inline-block;
+      background-color: #fff;
+      border-radius: 4px;
+      padding: 16px;
+    }
+
+    button {
+      margin: 8px 8px 0 0;
+    }
+  </style>
 </head>
 <body>
-  <h1>To do List</h1>
-  <button id="btnAdd">New Item</button>
-  <ul id="todolist">
-    <li><input type="checkbox"/><span>Write First item</span></li>
-  </ul>
-</body>
+	<div>
+	    <button id="btn-capture">이미지 캡쳐</button>
+	    <button id="btn-clear">텍스트 지우기</button>
+	  </div>
+	  
+    <div id="image-container">
+      <img src="./img/gom.jpg" alt="starwars" />
+      <div class="textbox-container">
+        <div class="textbox">
+          <div class="text-input" contenteditable="true"></div>
+        </div>
+      </div>
+    </div>
+	  <div id="dialog-dimming">
+	    <div id="dialog">
+	      <div id="dialog-content"></div>
+	      <button id="btn-close">닫기</button>
+	    </div>
+	  </div>
+  </body>
+  
+  <script type="text/javascript">
+  $( '.text-input' ).draggable();
+  
+//elements
+  const imgContainerEl = document.getElementById('image-container');
+  const dimmingEl = document.getElementById('dialog-dimming');
+  const dialogContentEl = document.getElementById('dialog-content');
 
+  // events
+  document.getElementById('btn-capture').onclick = () => {
+      dimmingEl.style.display = 'flex';
+      imgContainerEl.classList.add('placeholder--hidden');
+
+     html2canvas(imgContainerEl)
+        .then((canvasEl) => {
+          dialogContentEl.appendChild(canvasEl);
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        .then(() => {
+          imgContainerEl.classList.remove('placeholder--hidden');
+        });
+  };
+
+  document.getElementById('btn-clear').onclick = () => {
+      [...document.getElementsByClassName('text-input')].forEach((boxEl) => (boxEl.innerHTML = ''));
+  };
+
+  document.getElementById('btn-close').onclick = () => {
+      [...dialogContentEl.children].forEach((childEl) => childEl.remove());
+      dimmingEl.style.display = 'none';
+  };
+  </script>
 </html>
