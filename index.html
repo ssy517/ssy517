@@ -11,7 +11,7 @@
 <style>
     #image-container {
       position: relative;
-      width: 500px;
+      width: 768px;
       height: 1000px;
     }
 
@@ -27,10 +27,13 @@
 
     .textbox {
       display: flex;
+      position: absolute;
       flex-direction: column;
       justify-content: space-between;
       width: 50%;
       height: 50%;
+      top: 150px;
+      left: 360px;
     }
 
     .text-input {
@@ -41,7 +44,7 @@
       min-height: 28px;
       color: white;
       cursor : move;
-      z-index : 1;
+      /*z-index : 1;*/
     }
 
     .text-input:empty:after {
@@ -75,6 +78,7 @@
 
     button {
       margin: 8px 8px 0 0;
+      height: 35px;
     }
   </style>
 </head>
@@ -86,11 +90,11 @@
 	  
     <div id="image-container">
       <img src="./img/gom.jpg" alt="gom" />
-      <div class="textbox-container">
+      <!-- <div class="textbox-container"> -->
         <div class="textbox">
           <div class="text-input" contenteditable="true"></div>
         </div>
-      </div>
+      <!--</div>-->
     </div>
 	  <div id="dialog-dimming">
 	    <div id="dialog">
@@ -101,7 +105,7 @@
   </body>
   
   <script type="text/javascript">
-  $( '.textbox' ).draggable();
+  $( '.text-input' ).draggable();
   
 //elements
   const imgContainerEl = document.getElementById('image-container');
