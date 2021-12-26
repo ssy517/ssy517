@@ -44,7 +44,7 @@
       font-weight: bold;
       font-size: 24px;
       min-height: 28px;
-      color: white;
+      color: black;
       cursor : move;
       /*z-index : 1;*/
     }
@@ -88,12 +88,12 @@
 	<div>
 	    <button id="btn-capture">이미지 캡쳐</button>
 	    <button id="btn-clear">텍스트 지우기</button>
-	    	      <button id="btn-save">이미지 저장</button>
-	    
-	  </div>
+        <button id="btn-save">이미지 저장</button>
+        <input type="file" id="chooseFile" name="chooseFile" accept="image/*" onchange="loadFile(this)">
+	</div>
 	  
     <div id="image-container">
-      <img src="./img/gom.jpg" alt="gom" />
+      <img src="./img/gom.jpg" alt="gom" id="gom"/>
       <!-- <div class="textbox-container"> -->
         <div class="textbox">
           <div class="text-input" contenteditable="true"></div>
@@ -164,5 +164,35 @@
 	        }
 	    }
 	});
+  
+  function loadFile(input) {
+	    var file = input.files[0];	//선택된 파일 가져오기
+
+	    //미리 만들어 놓은 div에 text(파일 이름) 추가
+	    //var name = document.getElementById('fileName');
+	    //name.textContent = file.name;
+
+	    $('img').remove();
+	    
+	  	//새로운 이미지 div 추가
+	    var newImage = document.createElement("img");
+	    newImage.setAttribute("class", 'img');
+
+	    //이미지 source 가져오기
+	    newImage.src = URL.createObjectURL(file);   
+
+	    newImage.style.width = "736px";
+	    //newImage.style.height = "70%";
+	    //newImage.style.visibility = "hidden";   //버튼을 누르기 전까지는 이미지를 숨긴다
+	    newImage.style.objectFit = "contain";
+	    
+	   //이미지를 image-show div에 추가
+	    var container = document.getElementById('image-container');
+	   // var imgWidth = document.querySelector('.img').clientWidth;
+	   // container.style.height = imgWidth;
+
+	    //이미지를 image-show div에 추가
+	    container.appendChild(newImage);
+	};
   </script>
 </html>
