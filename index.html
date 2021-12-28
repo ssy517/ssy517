@@ -111,7 +111,7 @@
   <script type="text/javascript">
   $( '.text-input' ).draggable();
   
-//elements
+  //elements
   const imgContainerEl = document.getElementById('image-container');
   const dimmingEl = document.getElementById('dialog-dimming');
   const dialogContentEl = document.getElementById('dialog-content');
@@ -147,8 +147,8 @@
 	    $("#btn-save").on("click", function(){
 	    // 캡처 라이브러리를 통해 canvas 오브젝트 받고 이미지 파일로 리턴함
 	    html2canvas(document.querySelector("#image-container")).then(canvas => {
-	                saveAs(canvas.toDataURL('image/jpg'),"gom.jpg"); //다운로드 되는 이미지 파일 이름 지정
-	                });
+            saveAs(canvas.toDataURL('image/jpg'),"gom.jpg"); //다운로드 되는 이미지 파일 이름 지정
+            });
 	    });
 	    function saveAs(uri, filename) {
 	        // 캡처된 파일을 이미지 파일로 내보냄
@@ -177,22 +177,23 @@
 	  	//새로운 이미지 div 추가
 	    var newImage = document.createElement("img");
 	    newImage.setAttribute("class", 'img');
+	    newImage.setAttribute("id", 'newImg');
 
 	    //이미지 source 가져오기
 	    newImage.src = URL.createObjectURL(file);   
 
-	    newImage.style.width = "736px";
-	    //newImage.style.height = "70%";
-	    //newImage.style.visibility = "hidden";   //버튼을 누르기 전까지는 이미지를 숨긴다
+	    newImage.style.width = "100%";
 	    newImage.style.objectFit = "contain";
 	    
-	   //이미지를 image-show div에 추가
-	    var container = document.getElementById('image-container');
-	   // var imgWidth = document.querySelector('.img').clientWidth;
-	   // container.style.height = imgWidth;
-
+	    $("#image-container").height($("img").height());
 	    //이미지를 image-show div에 추가
+	     var container = document.getElementById('image-container');
 	    container.appendChild(newImage);
+	    
+	    $("#newImg").load(function(){
+	    	var cHeight = document.getElementById('newImg').clientHeight;
+		    container.style.height = cHeight + "px";
+	    });
 	};
   </script>
 </html>
