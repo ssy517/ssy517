@@ -9,7 +9,7 @@
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <meta charset="utf-8">
-<title>Insert title here</title>
+<title>Make your meme</title>
 <style>
     #image-container {
       position: relative;
@@ -88,8 +88,11 @@
 	<div>
 	    <button id="btn-capture">이미지 캡쳐</button>
 	    <button id="btn-clear">텍스트 지우기</button>
+   	    <button id="btn-add">말풍선 추가</button>
         <button id="btn-save">이미지 저장</button>
-        <input type="file" id="chooseFile" name="chooseFile" accept="image/*" onchange="loadFile(this)">
+		사진 업로드 >>> <input type="file" id="chooseFile" name="chooseFile" accept="image/*" onchange="loadFile(this)">
+    </div>
+    <div>
 	</div>
 	  
     <div id="image-container">
@@ -109,68 +112,88 @@
   </body>
   
   <script type="text/javascript">
-  $( '.text-input' ).draggable();
-  
-  //elements
-  const imgContainerEl = document.getElementById('image-container');
-  const dimmingEl = document.getElementById('dialog-dimming');
-  const dialogContentEl = document.getElementById('dialog-content');
+	  $( '.text-input' ).draggable();
+	  
+	  //elements
+	  const imgContainerEl = document.getElementById('image-container');
+	  const dimmingEl = document.getElementById('dialog-dimming');
+	  const dialogContentEl = document.getElementById('dialog-content');
+	
+	  // events
+	  document.getElementById('btn-capture').onclick = () => {
+	      dimmingEl.style.display = 'flex';
+	      imgContainerEl.classList.add('placeholder--hidden');
+	
+	     html2canvas(imgContainerEl)
+	        .then((canvasEl) => {
+	          dialogContentEl.appendChild(canvasEl);
+	        })
+	        .catch((error) => {
+	          console.log(error);
+	        })
+	        .then(() => {
+	          imgContainerEl.classList.remove('placeholder--hidden');
+	        });
+	  };
+	
+	  document.getElementById('btn-clear').onclick = () => {
+	      [...document.getElementsByClassName('text-input')].forEach((boxEl) => (boxEl.innerHTML = ''));
+	  };
+	
+	  document.getElementById('btn-close').onclick = () => {
+	      [...dialogContentEl.children].forEach((childEl) => childEl.remove());
+	      dimmingEl.style.display = 'none'; 
+	  };
 
-  // events
-  document.getElementById('btn-capture').onclick = () => {
-      dimmingEl.style.display = 'flex';
-      imgContainerEl.classList.add('placeholder--hidden');
-
-     html2canvas(imgContainerEl)
-        .then((canvasEl) => {
-          dialogContentEl.appendChild(canvasEl);
-        })
-        .catch((error) => {
-          console.log(error);
-        })
-        .then(() => {
-          imgContainerEl.classList.remove('placeholder--hidden');
-        });
-  };
-
-  document.getElementById('btn-clear').onclick = () => {
-      [...document.getElementsByClassName('text-input')].forEach((boxEl) => (boxEl.innerHTML = ''));
-  };
-
-  document.getElementById('btn-close').onclick = () => {
-      [...dialogContentEl.children].forEach((childEl) => childEl.remove());
-      dimmingEl.style.display = 'none'; 
-  };
-
-
-  $(function(){
-	    $("#btn-save").on("click", function(){
+    $("#btn-save").on("click", function(){
 	    // 캡처 라이브러리를 통해 canvas 오브젝트 받고 이미지 파일로 리턴함
 	    html2canvas(document.querySelector("#image-container")).then(canvas => {
-            saveAs(canvas.toDataURL('image/jpg'),"gom.jpg"); //다운로드 되는 이미지 파일 이름 지정
-            });
+	           saveAs(canvas.toDataURL('image/jpg'),"myMeme.jpg"); //다운로드 되는 이미지 파일 이름 지정
 	    });
-	    function saveAs(uri, filename) {
-	        // 캡처된 파일을 이미지 파일로 내보냄
-	        var link = document.createElement('a');
-	        if (typeof link.download === 'string') {
-	            link.href = uri;
-	            link.download = filename;
-	            document.body.appendChild(link);
-	            link.click();
-	            document.body.removeChild(link);
-	        } else {
-	            window.open(uri);
-	        }
-	    }
-	});
-  
+    });
+    
+    function saveAs(uri, filename) {
+        // 캡처된 파일을 이미지 파일로 내보냄
+        var link = document.createElement('a');
+        if (typeof link.download === 'string') {
+            link.href = uri;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } else {
+            window.open(uri);
+        }
+    }
+    
+    $("#btn-add").on("click", function(){
+    	//말풍선 추가
+	    var newDiv = document.createElement("div");
+	    newDiv.setAttribute("class", 'balloonBox');
+	    newDiv.style.display = "flex";
+	    newDiv.style.position = "absolute";
+	    newDiv.style.top = "150px";
+	    
+	    
+	    var newBalloon = document.createElement("img");
+	    //newBalloon.setAttribute("class", 'ui-draggable ui-draggable-handle');
+	    newBalloon.setAttribute("id", 'newBalloon');
+	    newBalloon.src = "./img/balloon.png";
+	    newBalloon.style.width = "300px";
+	    newBalloon.style.cursor = "move";
+	    
+	    newDiv.appendChild(newBalloon);
+	    
+	   //이미지를 image-container div에 추가
+	    var container = document.getElementById('image-container');
+	    container.insertBefore(newDiv, document.querySelector('.textbox'));
+	    $("#newBalloon").load(function(){
+		    $( '#newBalloon' ).draggable();
+	    });
+     });
+    
   function loadFile(input) {
 	    var file = input.files[0];	//선택된 파일 가져오기
-
-	    //미리 만들어 놓은 div에 text(파일 이름) 추가
-	    //var name = document.getElementById('fileName');
-	    //name.textContent = file.name;
 
 	    $('img').remove();
 	    
@@ -186,8 +209,8 @@
 	    newImage.style.objectFit = "contain";
 	    
 	    $("#image-container").height($("img").height());
-	    //이미지를 image-show div에 추가
-	     var container = document.getElementById('image-container');
+	    //이미지를 image-container div에 추가
+	    var container = document.getElementById('image-container');
 	    container.appendChild(newImage);
 	    
 	    $("#newImg").load(function(){
